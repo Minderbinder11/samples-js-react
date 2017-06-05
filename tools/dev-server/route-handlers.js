@@ -106,7 +106,7 @@ handlers.logout = (req, res) => {
  *
  * Route: /authorization-code/callback
  */
-handlers.callback = (req, res) => {
+handlers.callback = (req, res) => {  
   let nonce;
   let state;
 
@@ -114,6 +114,11 @@ handlers.callback = (req, res) => {
   // matches what we expect. The client sends a state parameter to Okta in
   // the /authorize request, and sets these cookies for validation here on the
   // server side.
+
+  console.log('route /authorization-code/callback', req.query);
+  console.log('route /authorization-code/callback', req.query);
+
+  // i think the cookies are set on the client and come backl from the authorization server
   if (req.cookies['okta-oauth-nonce'] && req.cookies['okta-oauth-state']) {
     nonce = req.cookies['okta-oauth-nonce'];
     state = req.cookies['okta-oauth-state'];
@@ -129,6 +134,7 @@ handlers.callback = (req, res) => {
   }
 
   if (!req.query.code) {
+    console.log('route /authorization-code/callback', req.query);
     res.status(401).send('Required query parameter "code" is missing');
     return;
   }

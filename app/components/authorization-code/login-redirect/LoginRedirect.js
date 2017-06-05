@@ -30,10 +30,12 @@ class LoginRedirect extends React.Component {
   login(e) {
     e.stopPropagation();
     e.preventDefault();
+    console.log('in login', this.props);
     this.authClient.token.getWithRedirect({ responseType: 'code' });
   }
 
   render() {
+    console.log('redirectURI: ', this.props.route.config.redirectUri);
     return (
       <div>
         <p>

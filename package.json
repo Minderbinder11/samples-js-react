@@ -12,7 +12,7 @@
     "lint:report": "eslint -f checkstyle -o build2/reports/lint/eslint-checkstyle-result.xml --ignore-path .gitignore .",
     "lint": "eslint --ignore-path .gitignore .",
     "build": "webpack --config webpack.config.js",
-    "start": "node tools/dev-server",
+    "start": "nodemon tools/dev-server",
     "ci-update-package": "ci-update-package",
     "ci-pkginfo:dataload": "ci-pkginfo -t dataload"
   },

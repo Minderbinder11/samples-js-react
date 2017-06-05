@@ -31,7 +31,7 @@ class LoginCustom extends React.Component {
         },
       },
     });
-    signIn.renderEl({ el: '#sign-in-container' }, () => {});
+    signIn.renderEl({ el: '#sign-in-container' }, () => {    console.log('in login', this.props);});
   }
 
   render() {

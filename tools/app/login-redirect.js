@@ -26,6 +26,7 @@ export default function render(config) {
 
   const link = document.getElementById('login');
   link.addEventListener('click', () => {
+        console.log('in login');
     auth.token.getWithRedirect({ responseType: 'code' });
   });
 }
