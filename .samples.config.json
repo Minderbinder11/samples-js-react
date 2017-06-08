@@ -1,15 +1,15 @@
 {
   "oktaSample": {
     "oidc": {
-      "oktaUrl": "http://127.0.0.1:7777",
-      "clientId": "zYVNoNIeSwul32vpNiOz",
-      "clientSecret": "8UxQqreZu4WQBK-KIqKQItqvtv5UlWRlqI36l4sb",
-      "redirectUri": "http://localhost:3000/authorization-code/callback"
+      "oktaUrl": "https://dev-477147.oktapreview.com",
+      "clientId": "cEBoZvS44tkt5R5VL7pX",
+      "clientSecret": "M3_PuCqN1hWdjAvWMSkUTEqaaasJzwNTadbj4HvV",
+      "redirectUri": "http://localhost:8000/authorization-code/callback"
     },
     "server": {
       "staticDir": "dist",
       "startSignal": "webpack: Compiled successfully",
-      "port": 3000,
+      "port": 8000,
       "useWebpackDevServer": true
     },
     "mockOkta": {

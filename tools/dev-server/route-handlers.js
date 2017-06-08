@@ -75,7 +75,10 @@ handlers.profile = (req, res) => {
     res.redirect(302, '/');
     return;
   }
-  res.render('profile', { user: req.session.user, config });
+
+
+
+  //res.render('profile', { user: req.session.user, config });
 };
 
 
@@ -110,18 +113,20 @@ handlers.callback = (req, res) => {
   let nonce;
   let state;
 
+
+  console.log('in callback');
   // Before initiating the /token request, validate that the user's state
   // matches what we expect. The client sends a state parameter to Okta in
   // the /authorize request, and sets these cookies for validation here on the
   // server side.
 
   console.log('route /authorization-code/callback', req.query);
-  console.log('route /authorization-code/callback', req.query);
 
   // i think the cookies are set on the client and come backl from the authorization server
   if (req.cookies['okta-oauth-nonce'] && req.cookies['okta-oauth-state']) {
     nonce = req.cookies['okta-oauth-nonce'];
     state = req.cookies['okta-oauth-state'];
+    console.log('cookies present', req.cookies['okta-oauth-state'])
   }
   else {
     res.status(401).send('"state" and "nonce" cookies have not been set before the /callback request');
@@ -140,7 +145,10 @@ handlers.callback = (req, res) => {
   }
 
   // The default token auth method is 'client_secret_basic'
+  // compute the secret
   const secret = new Buffer(`${config.oidc.clientId}:${config.oidc.clientSecret}`, 'utf8').toString('base64');
+
+  console.log('this is the secret', secret);
 
   const query = querystring.stringify({
     grant_type: 'authorization_code',
@@ -152,6 +160,7 @@ handlers.callback = (req, res) => {
     url: `${config.oidc.oktaUrl}/oauth2/v1/token?${query}`,
     method: 'POST',
     headers: {
+      // the secret is sent as a header
       Authorization: `Basic ${secret}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
@@ -160,10 +169,12 @@ handlers.callback = (req, res) => {
 
   request(options, (err, tokenRes, json) => {
     if (err) {
+      // good piece of form here
       res.status(500).send(err);
       return;
     }
 
+  
     if (json.error) {
       res.status(401).send(`${json.error}: ${json.error_description}`);
       return;
@@ -175,12 +186,14 @@ handlers.callback = (req, res) => {
     //    to verify the id_token signature. More information about validating
     //    id_tokens can be found here:
     //    http://developer.okta.com/docs/api/resources/oidc.html#validating-id-tokens
+
+    // here they get the ID_token and decode it
     const decoded = jws.decode(json.id_token);
     if (!decoded) {
       res.status(401).send('id_token could not be decoded from the response');
       return;
     }
-
+    //console.log('decoded idtoken: ', decoded );
     new Promise((resolve, reject) => {
       // If we've already cached this JWK, return it
       if (cachedJwks[decoded.header.kid]) {
@@ -213,6 +226,8 @@ handlers.callback = (req, res) => {
     })
     .then((jwk) => {
       const claims = JSON.parse(decoded.payload);
+
+      console.log('ID_token claims: ', claims);
 
       // Using the jwk, verify that the id_token signature is valid. In this
       // case, the library we're using, JWS, requires PEM encoding for our JWK.
@@ -269,9 +284,11 @@ handlers.callback = (req, res) => {
         claims,
       };
 
+      console.log('user session: ', req.session.user);
+
       // Now that the session cookie is set, we can navigate to the logged-in
       // app page.
-      res.redirect(302, '/authorization-code/profile');
+      res.status(200).json({status: 'SUCCESS'});
     })
     .catch(err => res.status(500).send(`Error! ${JSON.stringify(err)}`));
   });

@@ -12,13 +12,13 @@
 
 import React from 'react';
 import OktaAuth from '@okta/okta-auth-js/jquery';
+import config from '../../config.js'
 
 class Profile extends React.Component {
 
   constructor(props) {
     super(props);
     this.logout = this.logout.bind(this);
-    const config = this.props.route.config;
     this.state = {
       user: config.user,
     };

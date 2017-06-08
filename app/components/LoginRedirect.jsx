@@ -12,17 +12,20 @@
 
 import React from 'react';
 import OktaAuth from '@okta/okta-auth-js/jquery';
+import config from '../../config.js'
+
 
 class LoginRedirect extends React.Component {
 
   constructor(props) {
     super(props);
     this.login = this.login.bind(this);
-    const config = this.props.route.config;
+    //const config = this.props.config;
+    console.log('config', config);
     this.authClient = new OktaAuth({
-      url: config.oktaUrl,
-      clientId: config.clientId,
-      redirectUri: config.redirectUri,
+      url: config.oidc.oktaUrl,
+      clientId: config.oidc.clientId,
+      redirectUri: config.oidc.redirectUri,
       scopes: ['openid', 'email', 'profile'],
     });
   }
@@ -30,12 +33,12 @@ class LoginRedirect extends React.Component {
   login(e) {
     e.stopPropagation();
     e.preventDefault();
-    console.log('in login', this.props);
     this.authClient.token.getWithRedirect({ responseType: 'code' });
+    // with the sever side rendering,  using this call doesnt give me a place to get a response back
   }
 
   render() {
-    console.log('redirectURI: ', this.props.route.config.redirectUri);
+
     return (
       <div>
         <p>
@@ -54,12 +57,8 @@ class LoginRedirect extends React.Component {
           </tbody>
         </table>
         <p>
-          <button
-            id="login"
-            data-se="login-link"
-            className="ui icon button blue"
-            onClick={this.login}
-          >
+          <button id="login" data-se="login-link" className="ui icon button blue"
+            onClick={this.login}>
             <i className="sign in icon" />
             Login with Okta
           </button>
@@ -69,9 +68,9 @@ class LoginRedirect extends React.Component {
   }
 }
 
-LoginRedirect.propTypes = {
-  route: React.PropTypes.object.isRequired,
-};
+// LoginRedirect.propTypes = {
+//   route: React.PropTypes.object.isRequired,
+// };
 
 export default LoginRedirect;
 
